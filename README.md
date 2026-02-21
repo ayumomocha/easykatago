@@ -5,7 +5,6 @@
 ## 快速下载（推荐）
 - 最新版本（安装包 + 便携包）：https://github.com/easykatago/easykatago/releases/latest
 - 历史版本列表：https://github.com/easykatago/easykatago/releases
-- 推荐直接下载并安装 `EasyKataGoLauncher-Setup-vX.Y.Z.exe`。
 
 ## 特性
 - 一键初始化配置与默认档案
