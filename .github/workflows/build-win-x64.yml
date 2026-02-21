@@ -55,10 +55,12 @@ jobs:
         run: ./scripts/publish-win-x64.ps1 -Configuration Release -SelfContained -NoRestore
 
       - name: Install Inno Setup
+        if: steps.meta.outputs.is_release == 'true'
         shell: pwsh
         run: choco install innosetup --no-progress -y
 
       - name: Build installer exe
+        if: steps.meta.outputs.is_release == 'true'
         shell: pwsh
         run: |
           $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
