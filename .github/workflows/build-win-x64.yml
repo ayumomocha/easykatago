@@ -30,10 +30,11 @@ jobs:
           }
 
           if ([string]::IsNullOrWhiteSpace($tag)) {
-            $version = "0.0.0-dev"
+            $version = "0.0.0"
             $isRelease = "false"
           } else {
-            $version = if ($tag.StartsWith("v")) { $tag.Substring(1) } else { $tag }
+            $rawVersion = if ($tag.StartsWith("v")) { $tag.Substring(1) } else { $tag }
+            $version = ($rawVersion -split "-", 2)[0]
             $isRelease = "true"
           }
 
