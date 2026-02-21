@@ -44,7 +44,13 @@ public sealed class AboutPage : Page
             ]));
 
         root.Children.Add(BuildInfoCard(
-            "项目网址与鸣谢",
+            "项目地址",
+            [
+                "EasyKataGo: https://github.com/easykatago/easykatago"
+            ]));
+
+        root.Children.Add(BuildInfoCard(
+            "鸣谢",
             [
                 "KataGo: https://github.com/lightvector/KataGo",
                 "LizzieYzy: https://github.com/yzyray/lizzieyzy",

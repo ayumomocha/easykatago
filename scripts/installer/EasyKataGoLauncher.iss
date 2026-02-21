@@ -18,7 +18,7 @@ AppId={{6C5164C0-51B4-4A56-BD06-2A1D318FC220}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher=easykatago contributors
-AppPublisherURL=https://github.com/ayumomocha/easykatago
+AppPublisherURL=https://github.com/easykatago/easykatago
 DefaultDirName={localappdata}\EasyKataGoLauncher
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
@@ -49,7 +49,7 @@ Source: "{#SourceDir}\dist\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion re
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autodesktop}\EasyKataGo"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
