@@ -212,7 +212,7 @@ public sealed class InstallWorkflowService
                         }
                     }
                 }
-                else if (!settings.Download.AllowUnverified && component.Size <= 0)
+                else if (RequiresIntegrityMetadata(component, settings.Download.AllowUnverified) && component.Size <= 0)
                 {
                     return Fail($"组件缺少可校验的完整性元数据（sha256/size）：{component.Id}", installRoot);
                 }
@@ -1069,12 +1069,29 @@ public sealed class InstallWorkflowService
             }
         }
 
-        if (!allowUnverified && !HasIntegrityMetadata(component))
+        if (RequiresIntegrityMetadata(component, allowUnverified) && !HasIntegrityMetadata(component))
         {
             return "缺少完整性校验元数据（sha256/size）";
         }
 
         return null;
+    }
+
+    private static bool RequiresIntegrityMetadata(ComponentModel component, bool allowUnverified)
+    {
+        if (allowUnverified)
+        {
+            return false;
+        }
+
+        var type = (component.Type ?? string.Empty).Trim();
+        if (string.Equals(type, "cfg", StringComparison.OrdinalIgnoreCase))
+        {
+            // Upstream raw cfg endpoints may not provide stable sha256/content-length metadata.
+            return false;
+        }
+
+        return true;
     }
 
     private static HttpClient CreateHttpClient(SettingsModel settings, bool includeKataGoTrainingHeaders)
