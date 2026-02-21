@@ -1,0 +1,60 @@
+name: create-release-tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version, e.g. v0.1.0 or 0.1.0"
+        required: true
+        type: string
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Normalize and validate version
+        id: ver
+        shell: bash
+        run: |
+          raw="${{ inputs.version }}"
+          raw="${raw//[[:space:]]/}"
+
+          if [[ "$raw" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            tag="$raw"
+          elif [[ "$raw" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            tag="v$raw"
+          else
+            echo "Invalid version: $raw"
+            echo "Use vX.Y.Z or X.Y.Z"
+            exit 1
+          fi
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Create and push git tag
+        shell: bash
+        run: |
+          tag="${{ steps.ver.outputs.tag }}"
+
+          if git rev-parse "$tag" >/dev/null 2>&1; then
+            echo "Tag already exists: $tag"
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$tag" -m "Release $tag"
+          git push origin "$tag"
+
+      - name: Summary
+        shell: bash
+        run: |
+          echo "Created tag: ${{ steps.ver.outputs.tag }}"
+          echo "A new build/release run will be triggered by this tag push."
