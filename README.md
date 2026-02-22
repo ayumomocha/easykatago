@@ -6,6 +6,11 @@
 - 最新版本（安装包 + 便携包）：https://github.com/easykatago/easykatago/releases/latest
 - 历史版本列表：https://github.com/easykatago/easykatago/releases
 
+## 运行环境要求
+- 本项目基于 `.NET 10`（C# / WPF）开发。
+- 使用发布页安装包或便携包（win-x64）时：建议 `Windows 10/11 x64`，默认无需额外安装 .NET 运行时（已自包含发布）。
+- 源码构建/调试时：需要安装 `.NET SDK 10.x`。
+
 ## 特性
 - 一键初始化配置与默认档案
 - 支持 OpenCL / CUDA / TensorRT 后端选择
