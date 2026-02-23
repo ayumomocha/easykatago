@@ -1,0 +1,51 @@
+name: tauri-dev
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+      - feature/**
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  verify:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: Launcher.Tauri/package-lock.json
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix Launcher.Tauri
+
+      - name: Core tests
+        run: dotnet test Launcher.Core.Tests/Launcher.Core.Tests.csproj --configuration Release
+
+      - name: Bridge tests
+        run: dotnet test Launcher.Bridge.Tests/Launcher.Bridge.Tests.csproj --configuration Release
+
+      - name: Frontend lint
+        run: npm --prefix Launcher.Tauri run lint
+
+      - name: Frontend tests
+        run: npm --prefix Launcher.Tauri test -- --run
+
+      - name: Rust tests
+        run: cargo test --manifest-path Launcher.Tauri/src-tauri/Cargo.toml

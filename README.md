@@ -53,6 +53,17 @@ dotnet build Launcher.Core\Launcher.Core.csproj -nologo
 dotnet build Launcher.App\Launcher.App.csproj -nologo
 ```
 
+## 开发者：Tauri 重构分支
+```powershell
+# 启动前端开发服务器
+powershell -ExecutionPolicy Bypass -File .\scripts\tauri-dev.ps1
+
+# 构建 Tauri + Bridge（Windows）
+powershell -ExecutionPolicy Bypass -File .\scripts\tauri-build-win.ps1 -Configuration Release
+```
+
+迁移验证清单：`docs/tauri-migration-checklist.md`
+
 ## 开发者：本地发布（win-x64）
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\publish-win-x64.ps1 -SelfContained
