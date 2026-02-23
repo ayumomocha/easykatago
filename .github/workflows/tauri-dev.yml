@@ -47,12 +47,11 @@ jobs:
       - name: Frontend tests
         run: npm --prefix Launcher.Tauri test -- --run
 
+      - name: Build frontend bundle
+        run: npm --prefix Launcher.Tauri run build
+
       - name: Rust tests
         run: cargo test --manifest-path Launcher.Tauri/src-tauri/Cargo.toml
-
-      - name: Build frontend bundle
-        if: github.event_name == 'workflow_dispatch'
-        run: npm --prefix Launcher.Tauri run build
 
       - name: Publish bridge runtime
         if: github.event_name == 'workflow_dispatch'
