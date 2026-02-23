@@ -49,3 +49,44 @@ jobs:
 
       - name: Rust tests
         run: cargo test --manifest-path Launcher.Tauri/src-tauri/Cargo.toml
+
+      - name: Build frontend bundle
+        if: github.event_name == 'workflow_dispatch'
+        run: npm --prefix Launcher.Tauri run build
+
+      - name: Publish bridge runtime
+        if: github.event_name == 'workflow_dispatch'
+        run: dotnet publish Launcher.Bridge/Launcher.Bridge.csproj -c Release -o out/bridge
+
+      - name: Build Tauri shell release
+        if: github.event_name == 'workflow_dispatch'
+        run: cargo build --release --manifest-path Launcher.Tauri/src-tauri/Cargo.toml
+
+      - name: Package portable dev build
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: |
+          $stage = Join-Path $pwd "out\easykatago-tauri-dev-win-x64"
+          New-Item -ItemType Directory -Path $stage -Force | Out-Null
+
+          Copy-Item "Launcher.Tauri/src-tauri/target/release/launcher_tauri.exe" (Join-Path $stage "EasyKataGoLauncher.exe") -Force
+          Copy-Item "out/bridge/*" $stage -Recurse -Force
+
+          $launcherScript = @(
+            '@echo off'
+            'setlocal'
+            'set "LAUNCHER_BRIDGE_PATH=%~dp0Launcher.Bridge.exe"'
+            'start "" "%~dp0EasyKataGoLauncher.exe"'
+            'endlocal'
+          )
+          Set-Content -Path (Join-Path $stage "Start-EasyKataGoLauncher.cmd") -Value $launcherScript -Encoding ascii
+
+          Compress-Archive -Path "$stage\*" -DestinationPath "out/easykatago-tauri-dev-win-x64.zip" -Force
+
+      - name: Upload dev build artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: easykatago-tauri-dev-win-x64
+          path: out/easykatago-tauri-dev-win-x64.zip
+          if-no-files-found: error
